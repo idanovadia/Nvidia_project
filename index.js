@@ -1,5 +1,5 @@
 
-
+var localhost_address = "http://localhost:5000/"
 
 
 async function postMethod(jsonObj,directed_url){
@@ -21,7 +21,7 @@ async function postMethod(jsonObj,directed_url){
 }
 
 
-async function getMethod(url,jsonObj){
+async function getMethod(){
     return await fetch('http://localhost:5000/'+url, {
         mode:'cors',
         method: 'GET',
@@ -29,7 +29,6 @@ async function getMethod(url,jsonObj){
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify(jsonObj),
         }).then(response => {
             return response.json();
         }).then(jsonResponse => {
@@ -40,8 +39,9 @@ async function getMethod(url,jsonObj){
 }
 
 
-function generate(){
+async function generate(){
     var url = document.getElementById("origin_url").value;
     var jsonObj = {"url" : url};
-    document.getElementById("new_url").value = postMethod(jsonObj,'generate');
+    var json_url_response = await postMethod(jsonObj,'generate');
+    document.getElementById("new_url").value = localhost_address+json_url_response.url
 }
