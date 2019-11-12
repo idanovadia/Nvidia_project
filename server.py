@@ -4,10 +4,10 @@ from flask import Flask, redirect, url_for, render_template, request, session, j
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 import base62
+from sqlalchemy import and_
+import os
 
 # generate Flask
-from sqlalchemy import and_
-
 app = Flask(__name__)
 # config DB
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///urls.db'
@@ -53,21 +53,39 @@ def stats():
             # number of rows in URLShortener DB
             rows = URLShortener.query.count()
             # dict of rows that insert before minute/hour/day
-            redirections_dates = {'minute': '', 'hour': '', 'day': ''}
-            date_now = datetime.now()
-            redirections_dates['minute'] = selectByTImeRows(days=0, hours=0, minutes=1)
-            redirections_dates['hour'] = selectByTImeRows(days=0, hours=1, minutes=0)
-            redirections_dates['day'] = selectByTImeRows(days=1, hours=0, minutes=0)
+            creation_date_dict = {'minute': selectURLByDate(days=0, hours=0, minutes=1),
+                                  'hour': selectURLByDate(days=0, hours=1, minutes=0),
+                                  'day': selectURLByDate(days=1, hours=0, minutes=0)}
+            # dict of errors that insert before minute/hour/day
+            error_date_dict = {'minute': selectErrorByDate(days=0, hours=0, minutes=1),
+                               'hour': selectErrorByDate(days=1, hours=1, minutes=0),
+                               'day': selectErrorByDate(days=1, hours=0, minutes=0)}
+        return make_response(jsonify(rows=rows, count_by_date=creation_date_dict,
+                                     count_by_error=error_date_dict), 200)
 
-        return "redirections_dates['minute']"
     except Exception as e:
         logWriter("error", e, datetime.today())
         return make_response("cant get any information ,try again later", 404)
 
 
-def selectByTImeRows(days, hours, minutes):
+# read line by line in log file and check if this line is error type and when it had been writen
+def selectErrorByDate(days, hours, minutes):
+    count = 0
+    file = open("log.txt", "r")
+    lines = file.readlines()
+    current_date = datetime.today() - timedelta(days=days, hours=hours, minutes=minutes)
+    for line in lines:
+        jsonObj = json.loads(line)
+        error_date = datetime.strptime(jsonObj['date'], '%Y-%m-%d %H:%M:%S.%f')
+        if jsonObj['type'] == 'error' and error_date >= current_date:
+            count += 1
+    return count
+
+
+# get from DB all the urls before x minutes/hours/days
+def selectURLByDate(days, hours, minutes):
     return URLShortener.query.filter(
-        and_(URLShortener.data_created <= datetime.today()
+        and_(URLShortener.data_created >= datetime.today()
              - timedelta(days=days, hours=hours, minutes=minutes))).count()
 
 
@@ -119,9 +137,10 @@ def insertURL(new_task):
 
 
 def logWriter(description, res, date):
-    data = {'description: ': description, 'res: ': res, 'date: ': date}
-    with open('log.txt', 'w') as outfile:
+    data = {'type': description, 'description': res.__repr__(), 'date': date.__str__()}
+    with open('log.txt', 'a') as outfile:
         json.dump(data, outfile)
+        outfile.write("\n")
 
 
 if __name__ == "__main__":
