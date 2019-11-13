@@ -3,7 +3,7 @@ var localhost_address = "http://localhost:5000/"
 
 
 async function postMethod(jsonObj,directed_url){
-    return await fetch('http://localhost:5000/'+directed_url, {
+    return await fetch(localhost_address+directed_url,{
         mode:'cors',
         method: 'POST',
         headers: {
@@ -22,7 +22,7 @@ async function postMethod(jsonObj,directed_url){
 
 
 async function getMethod(){
-    return await fetch('http://localhost:5000/'+url, {
+    return await fetch(localhost_address+url, {
         mode:'cors',
         method: 'GET',
         headers: {

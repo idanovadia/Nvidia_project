@@ -8,7 +8,7 @@ from sqlalchemy import and_
 import os
 
 # generate Flask
-app = Flask(__name__)
+app = Flask(__name__, template_folder='template')
 # config DB
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///urls.db'
 db = SQLAlchemy(app)
@@ -53,16 +53,19 @@ def stats():
             # number of rows in URLShortener DB
             rows = URLShortener.query.count()
             # dict of rows that insert before minute/hour/day
-            creation_date_dict = {'minute': selectURLByDate(days=0, hours=0, minutes=1),
-                                  'hour': selectURLByDate(days=0, hours=1, minutes=0),
-                                  'day': selectURLByDate(days=1, hours=0, minutes=0)}
+            creation_date_dict = {'minute': str(selectURLByDate(days=0, hours=0, minutes=1)),
+                                  'hour': str(selectURLByDate(days=0, hours=1, minutes=0)),
+                                  'day': str(selectURLByDate(days=1, hours=0, minutes=0))}
             # dict of errors that insert before minute/hour/day
-            error_date_dict = {'minute': selectErrorByDate(days=0, hours=0, minutes=1),
-                               'hour': selectErrorByDate(days=1, hours=1, minutes=0),
-                               'day': selectErrorByDate(days=1, hours=0, minutes=0)}
-        return make_response(jsonify(rows=rows, count_by_date=creation_date_dict,
-                                     count_by_error=error_date_dict), 200)
-
+            error_date_dict = {'minute': str(selectErrorByDate(days=0, hours=0, minutes=1)),
+                               'hour': str(selectErrorByDate(days=1, hours=1, minutes=0)),
+                               'day': str(selectErrorByDate(days=1, hours=0, minutes=0))}
+            # return make_response(jsonify(rows=rows, count_by_date=creation_date_dict,
+            #                            count_by_error=error_date_dict), 200)
+            return render_template("stats.html", rows=rows, count_by_date=creation_date_dict,
+                                   count_by_error=error_date_dict)
+        else:
+            return render_template("stats.html")
     except Exception as e:
         logWriter("error", e, datetime.today())
         return make_response("cant get any information ,try again later", 404)

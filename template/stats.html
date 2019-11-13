@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Stats</title>
+</head>
+<body>
+    <h1>Stats</h1>
+    <br><br>
+    <span id="numOfROws">Number of shorter urls is: {{rows}}</span>
+    <table style="width:50%">
+  <tr id="tableOfStats">
+    <th></th>
+    <th>Last minute</th>
+    <th>Last hour</th>
+    <th>Last day</th>
+  </tr>
+  <tr>
+    <th>Insert in the Last: </th>
+    <th>{{count_by_date.minute}}</th>
+    <th>{{count_by_date.hour}}</th>
+    <th>{{count_by_date.day}}</th>
+  </tr>
+        <tr>
+    <th>Errors in the Last: </th>
+    <th>{{count_by_error.minute}}</th>
+    <th>{{count_by_error.hour}}</th>
+    <th>{{count_by_error.day}}</th>
+  </tr>
+</table>
+</body>
+<style>
+    table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+    }
+    th, td {
+      padding: 5px;
+    }
+    th {
+      text-align: left;
+    }
+</style>
+</html>
