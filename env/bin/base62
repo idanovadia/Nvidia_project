@@ -1,4 +1,4 @@
-#!/home/idan/PycharmProjects/Nvidia_project/env/bin/python3
+#!/home/idan/PycharmProjects/Tiny-URL/env/bin/python3
 # EASY-INSTALL-ENTRY-SCRIPT: 'base-62==0.1.1','console_scripts','base62'
 __requires__ = 'base-62==0.1.1'
 import re
