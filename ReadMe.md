@@ -40,12 +40,9 @@ For knowing what are the libs that require to run this program please watch the 
 
 ## UML diagrams
 
-```
 ![alt text](https://github.com/idanovadia/Tiny-URL/blob/master/readMeImages/uml_inv.png)
 
-https://github.com/idanovadia/Tiny-URL/blob/master/readMeImages/uml_inv.png
 
-```
 
 
 -   © 2019 GitHub, Inc.
