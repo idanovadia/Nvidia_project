@@ -25,18 +25,18 @@ For knowing what are the libs that require to run this program please watch the 
 ## Coding Files
  **Client**:
 	
-	 - index.html
-	 -  index.js 
-	 -  index.css 
-	 - stats.html
+	 index.html
+	 index.js 
+	 index.css 
+	 stats.html
 **Server**: 
 
-	- server.py
-	 - log.txt
+	server.py
+	log.txt
  **DB**:
 
-	 - urls.db
-		 -  url_shortener (table)
+	 urls.db
+		 url_shortener (table)
 
 ## UML diagrams
 
